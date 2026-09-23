@@ -11,10 +11,13 @@ class Loading extends StatefulWidget {
 
 class _LoadingState extends State<Loading> {
   String time = '';
-  Future<String> getTime() async {
+  Future<String> getTime(String timezone) async {
     Response response = await get(
         Uri.parse(
-            'https://timeapi.io/api/Time/current/zone?timeZone=Europe/London'));
+            'https://timeapi.io/api/Time/current/zone?timeZone=$timezone',
+        ),
+    );
+            //'https://timeapi.io/api/Time/current/zone?timeZone=Europe/London'));
     Map data = jsonDecode(response.body);
     //print(data);
     //time = data['time'];
@@ -34,10 +37,17 @@ class _LoadingState extends State<Loading> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getTime().then((value) {
+    getTime('Europe/London').then((value) {
       setState(() {
         time = value;
       });
+      Navigator.pushReplacementNamed(
+          context,'/home' ,
+      arguments: {
+            'location':'London',
+      'time': value,
+      },
+      );
 
     });
   }
